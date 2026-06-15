@@ -1,25 +1,35 @@
 @echo off
-chcp 65001 > nul
+setlocal
 cd /d "%~dp0"
 
-where node > nul 2>&1
-if errorlevel 1 (
-  echo Node.js が見つかりません。
-  echo PCを再起動してから、もう一度このファイルを実行してください。
-  pause
-  exit /b 1
-)
+set "NPM_CMD=npm.cmd"
 
-if not exist node_modules (
-  echo 初回起動の準備をしています...
-  call npm install
-  if errorlevel 1 (
-    echo 依存関係のインストールに失敗しました。
+where node >nul 2>&1
+if errorlevel 1 (
+  if exist "%ProgramFiles%\nodejs\node.exe" (
+    set "NPM_CMD=%ProgramFiles%\nodejs\npm.cmd"
+    set "PATH=%ProgramFiles%\nodejs;%PATH%"
+  ) else (
+    echo Node.js was not found.
+    echo Restart Windows and run this file again.
     pause
     exit /b 1
   )
 )
 
-start "" http://localhost:5173
-echo アプリを起動しています。この画面は閉じずに使用してください。
-call npm run dev -- --host 0.0.0.0
+if not exist node_modules (
+  echo Installing dependencies for the first launch...
+  call "%NPM_CMD%" install
+  if errorlevel 1 (
+    echo Failed to install dependencies.
+    pause
+    exit /b 1
+  )
+)
+
+echo Starting the app at http://localhost:5173
+start "" cmd /c "timeout /t 2 /nobreak >nul && start "" http://localhost:5173"
+call "%NPM_CMD%" run dev -- --host 0.0.0.0
+
+echo The app has stopped.
+pause
