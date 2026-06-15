@@ -1,7 +1,6 @@
 import { useState, type FormEvent } from "react";
 import {
   INTENSITIES,
-  MENU_NAMES,
   TRAINING_PARTS,
   type Intensity,
   type TrainingLog,
@@ -15,7 +14,6 @@ type TrainingFormProps = {
 
 type FormState = {
   date: string;
-  menuName: string;
   parts: TrainingPart[];
   intensity: Intensity;
   memo: string;
@@ -24,7 +22,6 @@ type FormState = {
 function createInitialForm(): FormState {
   return {
     date: getToday(),
-    menuName: MENU_NAMES[0],
     parts: [],
     intensity: "普通",
     memo: "",
@@ -64,7 +61,6 @@ export function TrainingForm({ onSave }: TrainingFormProps) {
     onSave({
       id: createId(),
       date: form.date,
-      menuName: form.menuName,
       parts: form.parts,
       intensity: form.intensity,
       memo: form.memo.trim(),
@@ -87,37 +83,18 @@ export function TrainingForm({ onSave }: TrainingFormProps) {
       </div>
 
       <form onSubmit={handleSubmit}>
-        <div className="form-grid">
-          <label className="field">
-            <span>日付</span>
-            <input
-              type="date"
-              required
-              value={form.date}
-              onChange={(event) => {
-                setForm({ ...form, date: event.target.value });
-                setSaved(false);
-              }}
-            />
-          </label>
-
-          <label className="field">
-            <span>メニュー名</span>
-            <select
-              value={form.menuName}
-              onChange={(event) => {
-                setForm({ ...form, menuName: event.target.value });
-                setSaved(false);
-              }}
-            >
-              {MENU_NAMES.map((menu) => (
-                <option key={menu} value={menu}>
-                  {menu}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
+        <label className="field">
+          <span>日付</span>
+          <input
+            type="date"
+            required
+            value={form.date}
+            onChange={(event) => {
+              setForm({ ...form, date: event.target.value });
+              setSaved(false);
+            }}
+          />
+        </label>
 
         <fieldset className="parts-fieldset">
           <legend>実施した部位</legend>

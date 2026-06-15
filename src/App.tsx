@@ -2,7 +2,13 @@ import { useMemo, useState } from "react";
 import { HistoryView } from "./components/HistoryView";
 import { SummaryView } from "./components/SummaryView";
 import { TrainingForm } from "./components/TrainingForm";
-import type { TrainingLog } from "./types";
+import {
+  INTENSITIES,
+  TRAINING_PARTS,
+  type Intensity,
+  type TrainingLog,
+  type TrainingPart,
+} from "./types";
 import { getToday } from "./utils/date";
 import { buildPartSummaries } from "./utils/summary";
 
@@ -23,7 +29,46 @@ function loadLogs(): TrainingLog[] {
       return [];
     }
     const parsedLogs: unknown = JSON.parse(savedLogs);
-    return Array.isArray(parsedLogs) ? (parsedLogs as TrainingLog[]) : [];
+    if (!Array.isArray(parsedLogs)) {
+      return [];
+    }
+
+    return parsedLogs.flatMap((value): TrainingLog[] => {
+      if (
+        typeof value !== "object" ||
+        value === null ||
+        typeof value.id !== "string" ||
+        typeof value.date !== "string" ||
+        !Array.isArray(value.parts) ||
+        !INTENSITIES.includes(value.intensity as Intensity)
+      ) {
+        return [];
+      }
+
+      const parts: TrainingPart[] = (value.parts as unknown[])
+        .map((part: unknown): string => {
+          if (part === "二頭") return "腕（二頭）";
+          if (part === "三頭") return "腕（三頭）";
+          return typeof part === "string" ? part : "";
+        })
+        .filter((part: string): part is TrainingPart =>
+          TRAINING_PARTS.includes(part as TrainingPart),
+        );
+
+      if (parts.length === 0) {
+        return [];
+      }
+
+      return [
+        {
+          id: value.id,
+          date: value.date,
+          parts: [...new Set(parts)],
+          intensity: value.intensity as Intensity,
+          memo: typeof value.memo === "string" ? value.memo : "",
+        },
+      ];
+    });
   } catch {
     return [];
   }

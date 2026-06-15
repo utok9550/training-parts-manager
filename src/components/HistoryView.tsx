@@ -15,7 +15,7 @@ export function HistoryView({ logs, onDelete }: HistoryViewProps) {
   const handleDelete = (log: TrainingLog) => {
     if (
       window.confirm(
-        `${formatDisplayDate(log.date)}の「${log.menuName}」を削除しますか？`,
+        `${formatDisplayDate(log.date)}の記録（${log.parts.join("、")}）を削除しますか？`,
       )
     ) {
       onDelete(log.id);
@@ -47,7 +47,6 @@ export function HistoryView({ logs, onDelete }: HistoryViewProps) {
                   <time dateTime={log.date}>
                     {formatDisplayDate(log.date)}
                   </time>
-                  <h3>{log.menuName}</h3>
                 </div>
                 <span className={`intensity intensity-${log.intensity}`}>
                   {log.intensity}
