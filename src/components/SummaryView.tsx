@@ -18,7 +18,6 @@ export function SummaryView({ summaries }: SummaryViewProps) {
       <div className="page-heading">
         <p className="eyebrow">BODY STATUS</p>
         <h2 id="summary-title">部位サマリー</h2>
-        <p>直近の記録から、次に取り組みたい部位を確認できます。</p>
       </div>
 
       <div className="summary-grid">
@@ -33,14 +32,6 @@ export function SummaryView({ summaries }: SummaryViewProps) {
             </div>
             <dl className="summary-stats">
               <div>
-                <dt>最終実施日</dt>
-                <dd>
-                  {summary.lastDate
-                    ? formatDisplayDate(summary.lastDate)
-                    : "なし"}
-                </dd>
-              </div>
-              <div>
                 <dt>経過日数</dt>
                 <dd>
                   {summary.elapsedDays === null
@@ -51,6 +42,14 @@ export function SummaryView({ summaries }: SummaryViewProps) {
               <div>
                 <dt>直近7日</dt>
                 <dd>{summary.recentCount}回</dd>
+              </div>
+              <div className="summary-last-date">
+                <dt>最終</dt>
+                <dd>
+                  {summary.lastDate
+                    ? formatDisplayDate(summary.lastDate).slice(5)
+                    : "なし"}
+                </dd>
               </div>
             </dl>
           </article>
