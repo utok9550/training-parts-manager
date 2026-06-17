@@ -13,6 +13,7 @@ import { getToday } from "./utils/date";
 import { buildPartSummaries } from "./utils/summary";
 
 const STORAGE_KEY = "training_logs_v1";
+const BACKUP_STORAGE_KEY = "training_logs_v1_backup";
 
 type Tab = "record" | "summary" | "history";
 
@@ -22,15 +23,14 @@ const tabs: { id: Tab; label: string }[] = [
   { id: "history", label: "履歴" },
 ];
 
-function loadLogs(): TrainingLog[] {
+function parseLogs(savedLogs: string | null): TrainingLog[] | null {
   try {
-    const savedLogs = localStorage.getItem(STORAGE_KEY);
     if (!savedLogs) {
-      return [];
+      return null;
     }
     const parsedLogs: unknown = JSON.parse(savedLogs);
     if (!Array.isArray(parsedLogs)) {
-      return [];
+      return null;
     }
 
     return parsedLogs.flatMap((value): TrainingLog[] => {
@@ -70,8 +70,18 @@ function loadLogs(): TrainingLog[] {
       ];
     });
   } catch {
-    return [];
+    return null;
   }
+}
+
+function loadLogs(): TrainingLog[] {
+  const savedLogs = parseLogs(localStorage.getItem(STORAGE_KEY));
+  if (savedLogs !== null) {
+    return savedLogs;
+  }
+
+  const backupLogs = parseLogs(localStorage.getItem(BACKUP_STORAGE_KEY));
+  return backupLogs ?? [];
 }
 
 function App() {
@@ -83,12 +93,22 @@ function App() {
   );
 
   const updateLogs = (nextLogs: TrainingLog[]) => {
-    setLogs(nextLogs);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(nextLogs));
+    try {
+      const serializedLogs = JSON.stringify(nextLogs);
+      localStorage.setItem(STORAGE_KEY, serializedLogs);
+      localStorage.setItem(BACKUP_STORAGE_KEY, serializedLogs);
+      setLogs(nextLogs);
+      return true;
+    } catch {
+      window.alert(
+        "記録の保存に失敗しました。ブラウザの空き容量やサイトデータ設定を確認してください。",
+      );
+      return false;
+    }
   };
 
   const saveLog = (log: TrainingLog) => {
-    updateLogs([...logs, log]);
+    return updateLogs([...logs, log]);
   };
 
   const deleteLog = (id: string) => {

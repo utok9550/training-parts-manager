@@ -9,7 +9,7 @@ import {
 import { getToday } from "../utils/date";
 
 type TrainingFormProps = {
-  onSave: (log: TrainingLog) => void;
+  onSave: (log: TrainingLog) => boolean;
 };
 
 type FormState = {
@@ -58,13 +58,19 @@ export function TrainingForm({ onSave }: TrainingFormProps) {
       return;
     }
 
-    onSave({
+    const savedLog = onSave({
       id: createId(),
       date: form.date,
       parts: form.parts,
       intensity: form.intensity,
       memo: form.memo.trim(),
     });
+    if (!savedLog) {
+      setError("記録を保存できませんでした。");
+      setSaved(false);
+      return;
+    }
+
     setForm(createInitialForm());
     setError("");
     setSaved(true);
