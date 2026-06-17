@@ -115,6 +115,29 @@ function App() {
     updateLogs(logs.filter((log) => log.id !== id));
   };
 
+  const importLogs = (serializedLogs: string) => {
+    const importedLogs = parseLogs(serializedLogs);
+    if (importedLogs === null) {
+      return null;
+    }
+
+    const savedIds = new Set(logs.map((log) => log.id));
+    const mergedLogs = [...logs];
+    let importedCount = 0;
+
+    importedLogs.forEach((log) => {
+      if (savedIds.has(log.id)) {
+        return;
+      }
+
+      savedIds.add(log.id);
+      mergedLogs.push(log);
+      importedCount += 1;
+    });
+
+    return updateLogs(mergedLogs) ? importedCount : null;
+  };
+
   return (
     <div className="app-shell">
       <header className="app-header">
@@ -149,7 +172,11 @@ function App() {
           <SummaryView summaries={summaries} />
         )}
         {activeTab === "history" && (
-          <HistoryView logs={logs} onDelete={deleteLog} />
+          <HistoryView
+            logs={logs}
+            onDelete={deleteLog}
+            onImport={importLogs}
+          />
         )}
       </main>
 

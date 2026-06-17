@@ -305,6 +305,39 @@ h2 {
   font-size: 14px;
 }
 
+.backup-actions {
+  display: flex;
+  gap: 8px;
+  margin: 0 0 14px;
+}
+
+.backup-actions button {
+  min-height: 38px;
+  padding: 0 13px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  color: var(--green-dark);
+  background: white;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.backup-actions button:hover {
+  border-color: var(--green);
+  background: #f5faf7;
+}
+
+.backup-actions input {
+  display: none;
+}
+
+.backup-message {
+  margin: -4px 0 14px;
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 700;
+}
+
 .summary-grid,
 .history-list {
   display: grid;
