@@ -1,5 +1,15 @@
-const CACHE_NAME = "training-parts-manager-v2";
+const CACHE_NAME = "training-parts-manager-v3";
 const APP_SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg"];
+
+function fetchAndCache(request) {
+  return fetch(request).then((response) => {
+    const responseClone = response.clone();
+    caches.open(CACHE_NAME).then((cache) => {
+      cache.put(request, responseClone);
+    });
+    return response;
+  });
+}
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -35,32 +45,13 @@ self.addEventListener("fetch", (event) => {
 
   if (event.request.mode === "navigate") {
     event.respondWith(
-      fetch(event.request)
-        .then((response) => {
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put("./", responseClone);
-          });
-          return response;
-        })
+      fetchAndCache(event.request)
         .catch(() => caches.match("./")),
     );
     return;
   }
 
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-
-      return fetch(event.request).then((response) => {
-        const responseClone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseClone);
-        });
-        return response;
-      });
-    }),
+    fetchAndCache(event.request).catch(() => caches.match(event.request)),
   );
 });
