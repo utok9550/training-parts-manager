@@ -1,5 +1,6 @@
 import type { PartSummary, Priority } from "../types";
 import { formatDisplayDate } from "../utils/date";
+import "./SummaryView.css";
 
 type SummaryViewProps = {
   summaries: PartSummary[];
@@ -34,14 +35,28 @@ export function SummaryView({ summaries }: SummaryViewProps) {
               <div>
                 <dt>経過日数</dt>
                 <dd>
-                  {summary.elapsedDays === null
-                    ? "-"
-                    : `${summary.elapsedDays}日`}
+                  {summary.elapsedDays === null ? (
+                    "-"
+                  ) : (
+                    <span className="metric-value">
+                      <span className="metric-number">
+                        {summary.elapsedDays}
+                      </span>
+                      <span className="metric-unit">日</span>
+                    </span>
+                  )}
                 </dd>
               </div>
               <div>
                 <dt>直近7日</dt>
-                <dd>{summary.recentCount}回</dd>
+                <dd>
+                  <span className="metric-value">
+                    <span className="metric-number">
+                      {summary.recentCount}
+                    </span>
+                    <span className="metric-unit">回</span>
+                  </span>
+                </dd>
               </div>
               <div className="summary-last-date">
                 <dt>最終</dt>

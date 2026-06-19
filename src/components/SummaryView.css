@@ -1,0 +1,61 @@
+.summary-stats div:not(.summary-last-date) {
+  padding: 8px 8px 7px;
+  border-radius: 12px;
+  background: #f6f8f5;
+}
+
+.summary-stats dd {
+  color: var(--ink);
+}
+
+.metric-value {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  line-height: 1;
+}
+
+.metric-number {
+  font-size: 1.7em;
+  font-weight: 1000;
+  letter-spacing: -0.05em;
+}
+
+.metric-unit {
+  font-size: 0.85em;
+  font-weight: 900;
+}
+
+@media (max-width: 430px) {
+  .summary-card {
+    min-height: 136px;
+    padding: 10px 9px 9px 12px;
+  }
+
+  .summary-stats {
+    gap: 7px;
+    margin-top: 9px;
+  }
+
+  .summary-stats div:not(.summary-last-date) {
+    padding: 7px 7px 6px;
+    border-radius: 10px;
+  }
+
+  .summary-stats dt {
+    margin-bottom: 3px;
+    font-size: 9px;
+  }
+
+  .summary-stats dd {
+    font-size: 15px;
+  }
+
+  .metric-number {
+    font-size: 1.9em;
+  }
+
+  .metric-unit {
+    font-size: 0.8em;
+  }
+}
