@@ -338,6 +338,70 @@ h2 {
   font-weight: 700;
 }
 
+.recent-calendar {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 5px;
+  margin: 0 0 14px;
+}
+
+.recent-calendar-day {
+  display: grid;
+  min-width: 0;
+  min-height: 72px;
+  align-content: start;
+  gap: 4px;
+  padding: 7px 3px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.62);
+  text-align: center;
+}
+
+.recent-calendar-day.has-log {
+  border-color: rgba(35, 102, 77, 0.28);
+  color: var(--ink);
+  background: #f5faf7;
+}
+
+.recent-calendar-day.is-today {
+  border-color: var(--green);
+  background: #e3f4eb;
+  box-shadow: inset 0 0 0 1px rgba(35, 102, 77, 0.18);
+}
+
+.recent-calendar-weekday,
+.recent-calendar-day time,
+.recent-calendar-empty,
+.recent-calendar-parts {
+  display: block;
+  overflow-wrap: anywhere;
+  line-height: 1.15;
+}
+
+.recent-calendar-weekday {
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.recent-calendar-day time {
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.recent-calendar-empty {
+  color: #9aa39e;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.recent-calendar-parts {
+  color: var(--green-dark);
+  font-size: 11px;
+  font-weight: 900;
+}
+
 .summary-grid,
 .history-list {
   display: grid;
@@ -615,6 +679,25 @@ footer {
 
   .page-heading h2 {
     font-size: 22px;
+  }
+
+  .recent-calendar {
+    gap: 3px;
+  }
+
+  .recent-calendar-day {
+    min-height: 64px;
+    padding: 6px 2px;
+    border-radius: 8px;
+  }
+
+  .recent-calendar-weekday {
+    font-size: 9px;
+  }
+
+  .recent-calendar-day time,
+  .recent-calendar-parts {
+    font-size: 10px;
   }
 
   .part-options {

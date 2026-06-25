@@ -14,7 +14,7 @@ import { buildPartSummaries } from "./utils/summary";
 
 const STORAGE_KEY = "training_logs_v1";
 const BACKUP_STORAGE_KEY = "training_logs_v1_backup";
-const APP_VERSION = "2026.06.19.1";
+const APP_VERSION = "2026.06.25.1";
 
 type Tab = "record" | "summary" | "history";
 

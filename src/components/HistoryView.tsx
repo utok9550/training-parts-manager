@@ -1,6 +1,6 @@
 import { useRef, useState, type ChangeEvent } from "react";
-import type { TrainingLog } from "../types";
-import { formatDisplayDate } from "../utils/date";
+import type { TrainingLog, TrainingPart } from "../types";
+import { formatDisplayDate, formatLocalDate, getToday } from "../utils/date";
 
 type HistoryViewProps = {
   logs: TrainingLog[];
@@ -8,9 +8,49 @@ type HistoryViewProps = {
   onImport: (serializedLogs: string) => number | null;
 };
 
+const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
+
+const shortPartLabels: Record<TrainingPart, string> = {
+  胸: "胸",
+  肩: "肩",
+  背中: "背",
+  脚: "脚",
+  "腕（二頭）": "二",
+  "腕（三頭）": "三",
+};
+
+function buildRecentDays(logs: TrainingLog[]) {
+  const todayDate = new Date();
+  const today = getToday();
+
+  return Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(todayDate);
+    date.setDate(todayDate.getDate() - (6 - index));
+
+    const dateKey = formatLocalDate(date);
+    const parts = [
+      ...new Set(
+        logs
+          .filter((log) => log.date === dateKey)
+          .flatMap((log) => log.parts),
+      ),
+    ];
+
+    return {
+      date: dateKey,
+      day: date.getDate(),
+      month: date.getMonth() + 1,
+      parts,
+      weekday: weekdays[date.getDay()],
+      isToday: dateKey === today,
+    };
+  });
+}
+
 export function HistoryView({ logs, onDelete, onImport }: HistoryViewProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [backupMessage, setBackupMessage] = useState("");
+  const recentDays = buildRecentDays(logs);
   const sortedLogs = [...logs].sort((a, b) => {
     const dateOrder = b.date.localeCompare(a.date);
     return dateOrder !== 0 ? dateOrder : b.id.localeCompare(a.id);
@@ -62,6 +102,29 @@ export function HistoryView({ logs, onDelete, onImport }: HistoryViewProps) {
         <p className="eyebrow">HISTORY</p>
         <h2 id="history-title">トレーニング履歴</h2>
         <p>{logs.length}件の記録があります。</p>
+      </div>
+
+      <div className="recent-calendar" aria-label="直近7日間の記録">
+        {recentDays.map((day) => (
+          <div
+            className={`recent-calendar-day${day.isToday ? " is-today" : ""}${
+              day.parts.length > 0 ? " has-log" : ""
+            }`}
+            key={day.date}
+          >
+            <span className="recent-calendar-weekday">{day.weekday}</span>
+            <time dateTime={day.date}>
+              {day.month}/{day.day}
+            </time>
+            {day.parts.length > 0 ? (
+              <span className="recent-calendar-parts">
+                {day.parts.map((part) => shortPartLabels[part]).join(" ")}
+              </span>
+            ) : (
+              <span className="recent-calendar-empty">-</span>
+            )}
+          </div>
+        ))}
       </div>
 
       <div className="backup-actions" aria-label="バックアップ操作">
