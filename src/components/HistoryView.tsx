@@ -17,7 +17,7 @@ const shortPartLabels: Record<TrainingPart, string> = {
   脚: "脚",
   "腕（二頭）": "二",
   "腕（三頭）": "三",
-  有酸素: "有",
+  有酸素: "有酸素",
 };
 
 function buildRecentDays(logs: TrainingLog[]) {
