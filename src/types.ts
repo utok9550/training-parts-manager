@@ -5,6 +5,7 @@ export const TRAINING_PARTS = [
   "脚",
   "腕（二頭）",
   "腕（三頭）",
+  "有酸素",
 ] as const;
 
 export const INTENSITIES = ["軽め", "普通", "重め"] as const;

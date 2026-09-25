@@ -716,6 +716,10 @@ footer {
     order: 5;
   }
 
+  .part-option:nth-child(7) {
+    order: 7;
+  }
+
   .panel {
     padding: 18px;
     border-radius: 17px;
